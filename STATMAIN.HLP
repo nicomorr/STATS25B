@@ -1,0 +1,1424 @@
+General HELP
+ 
+ Help is always accessed through the F1 Key.
+ 
+ The Help File is an ASCII text file (STATMAIN.HLP) which can be printed.
+ 
+ Help is a hierarchical menu-driven system. From F1 at the main menu you
+ can roam about through the menus, which become more detailed as you go
+ downstream.
+ 
+ Inside the program itself, whenever 'F1' is visible, there is help on that
+ subject available.
+ 
+ The best help you can give us, the programmers, is to report difficulties
+ or bugs.  What looks like a bug may be something that we can quickly clear
+ up for you.
+ 
+ If help needed with bugs/problems or you have suggestions/improvements:
+    Hugh Grierson, ECL, Henley: Tel: (491) 411100   Fax: (491) 410762.
+    Nick Morrison, WCS, Cyprus: Tel: (357) 6 652088 Fax: (357) 6 235307.
+
+NEW Additions
+ 
+ Version 2.4 has additional graphing for current & crab angle comparisons
+ used in planning 3D line times.  Geco only, as use is made of water &
+ ground speeds & system & gyro headings.  These values are stored in a file
+ with the extension .GRF & the data file name.
+ 
+ To view/print the new graphics a VGA screen is required, but the .GRF files
+ can be generated with any machine.
+ 
+ F9 at main menu calls the additional graphing. To get F9 in the bottom line
+ other menu names have been squashed but they all work as previously.
+ 
+ Print settings for .GRF graphs are different from settings in F3 Printer &
+ are set in F8 Gfx (Setup Graphing).
+
+External Headers
+ 
+ External Headers were introduced as part of the SEG-D format range by the
+ SEG Subcommittee on Digital Tape Formats 1980. For details see the SEG Tape
+ Formats Handbook.
+ 
+ SEG-D Format Header Blocks:
+    GENERAL HEADER    --   mandatory 32 bytes (similar to SEG-A, B & C).
+    SCAN TYPE HEADER  --   mandatory (channel set descriptors & skew).
+    EXTENDED HEADER   --   optional (user defined).
+    EXTERNAL HEADER   --   optional (user defined).
+ Byte 32 of the General Header contains the number of 32 byte fields in the
+ External Header.
+ 
+ Each Contractor is free to put what data they wish onto tape inside
+ EXTENDED or EXTERNAL HEADER Blocks.  Some put in more than others.  As
+ Clients and QC Reps we should encourage as much EXTERNAL HEADER data
+ logging as possible.
+
+Headstat Program
+ 
+ The aim of Headstat is to QC seismic lines by analysing External Header
+ data logged to disk (usually by the ECLHeader on-line program).
+ 
+ The user must first configure Headstat so that it understands the various
+ details of header formats, project, sources, cables, etc. Specs to be
+ applied must be set & Analyses to be done selected.  Drives/Directories
+ have to be chosen, as well as Graphics & Printer settings.
+ 
+ To do a run, the line (data file) is chosen & a SP range selected. Each SP
+ is evaluated in sequence; errors are flagged & stats accumulated. At run
+ end various text reports are filed to disk; graphs are held in memory &
+ must be printed at this time.
+ 
+ The data file can be archived in compressed form, together with the current
+ configuration, to floppy or hard disk;  thus all lines of a prospect can
+ be stored;  these compressed files can be retrieved later, with automatic
+ configuration update; configurations can also be stored & retrieved.
+
+Overall Procedure
+ 
+ At Project Start, both the ECL Header Logging Program & Headstat V2 have to
+ be configured. This is always a lengthy task.  However, once set up, both
+ programs are essentially automatic in operation.
+ 
+ (1) LOG LINE - Try to set the exact SP range. MAKE SURE that the full line
+     name is put in the ECLHeader Logger Comment Field as this may be the
+     only text ID.  Put the line sequence number there as well, if room.
+ 
+ (2) RUN STATS - As soon after EOL as possible (results are often useful to
+     the Observers & may correct wrong Observers Logs).
+ 
+ (3) PRINT GRAPHICS - At end run, before returning to main menu, first view
+     the statistics, then view the graphics & then print the graphics.
+ 
+ (4) ARCHIVE LINE - Back at the main menu, you will usually wish to archive
+     the line to floppy.
+ 
+ (5) PRINT TEXT - After this, exit Headstat; print the report files with the
+     word processor  of your choice.
+
+Doing A Stats Run
+ 
+ F2 Run - Select a file; if the SP range is correct press <CR> to start run.
+ 
+ To change SP range, press F8; select a range & confirm with <Ctrl-Enter>.
+ 
+ At Run Time Summary, F2 Set Waypoint tells the program to halt at the
+ waypoint SP for changing a setting, viewing stats, & setting next waypoint.
+ 
+ During Run you can <ESC> Interrupt Run  at any time. A menu is presented
+ allowing changing settings, viewing interim stats, or setting another
+ waypoint. DO NOT ADD NEW ANALYSES DURING A RUN - SYSTEM WILL CRASH. But you
+ can turn analyses OFF if there is a short period of corrupt data, & then
+ reenable them. Use F2 Set Waypoint for this. Specs can be changed, but note
+ that specs reported in stats are those in use at the end of a run.
+ 
+ Report files will be logged to disk when the run has either been completed
+ or aborted. Note: they will overwrite previous files of the same name.
+
+Headstat Reports
+ 
+ Text reporting is made to disk; the report files all have the same name as
+ the data file, but different extensions:
+       .TXT    line summary & statistical results.
+       .LOG    sequencial line error log.
+       .SEQ    source firing sequence report.
+       .PRN    system timing list in Lotus PRN format.
+ The above files are made automatically during the stats run, if requested.
+ 
+       .SPN    listing of SP/FN/TIME/GUN MASK.
+ Made if a listing run is requested (Options F5). Used to detail problem
+ areas in SP/FN numbering & when sources get jumbled up.
+ 
+ Note that source reporting is made partly from the gun controller & partly
+ from the gun masks.  See Xfiring - under 'Sources - Algorithms'.
+ 
+ Graphics reports are made direct to screen & printer (if requested) & are 
+ not saved to disk; they consist of a number of 'fixed stikogram' &
+ 'variable stikogram' graphs, together with text blocks.
+
+General
+ 
+ "Lies, Damned Lies - and Statistics".  There is much truth here - any
+ statistical analysis depends on:
+   (a)  The data received - watch the ECLHeader Logging Program to be
+        sure Headsat will have valid data to work on.  If in doubt, do an
+        ECLHeader line re-run over the doubtful SP period & look at the
+        data SP by SP.
+   (b)  The algorithms employed - understand them; be aware of their extent
+        and limitations.
+   (c)  Interpretation of results - look at the overall picture; don't rely
+        blindly on 'the numbers'.
+ 
+ Evaluation of a set of statistics often depends on other data not presented
+ in the data set, or factors not considered by the algorithms; a line with
+ 15% misfires may be better than one with 4%, if all the latter is large
+ guns with timing errors more than 10mS, and the former is all small guns
+ only 0.1mS outside the spec.  Financial considerations may outweigh
+ technical specs at the end of a survey if the weather is worsening.
+
+Memory
+ 
+ HeadStat V2 is a large program & requires considerable memory; it is NOT
+ advisable to have any memory-resident programs running underneath it unless
+ they are very small.  Norton Commander & Sidekick are the most common
+ offenders here as they both require large amounts of memory.
+ 
+ Even if HeadStat loads without memory problems, more memory is allocated
+ when running a line, to hold analyses, graphics arrays etc, & you may run
+ out of memory here if resident programs are installed.
+ 
+ If - even with all resident programs expelled - you get memory errors, or
+ if HeadStat exhibits random problems while running a line, the procedure
+ is then to turn off Graphics F8 and see if it will run OK.  If the problem
+ persists, turn off Analyses F4 & try with less analyses running.  If OK,
+ then add back Analyses F4 & then Graphics F8 until you reach the limit.
+
+Numbering
+ 
+ A line may have been set to log a full SP range, but aborted prior to
+ completion. The seismic or mavigation system continued after this to send
+ out incrementing SPs, which the logger continued to log until reaching the
+ nominal LSP, at which time the logger stopped logging.  Thus the data file
+ contains the full line SP range, but the data after the aborted SP will be
+ garbage.
+ 
+ It is therefore very important to check the valid SP range.
+ 
+ Another common numbering problem is when the data is from the slave vessel
+ of a 2 boat project. The slave boat may jump SPs & will often stop on a
+ different LSP than the master.
+ 
+ The time of the last SP of the master vessel may be a good reference in
+ this situation.
+
+Read After Write
+ 
+ Some contractors pick off External Header data prior to tape write. Others
+ read it after writing to tape; read after write is preferred, since it
+ presents the actual data on tape; read before write may create problems.
+    For example:
+ The FN/SP numbering algorithm looks at FSP/LSP & FFN/LFN to see whether
+ they increment or decrement. During a run it checks if the changes stay in
+ step. Suppose a SP is issued early; Headstat will read the SP and if Time
+ Interval Analysis is ON, will report a short SP time; the next SP it will
+ report a FN jump.
+ 
+ What actually happened on tape was that the SP was not recorded, since the
+ prior SP was still being recorded and thus there was a SP jump, not a FN
+ jump. If Headstat had been read after write, it would have reported this
+ correctly and also reported a long SP time interval.
+ 
+ Note that Headstat is working correctly in both cases, but has been given
+ different data on an identical situation.
+
+Debugging
+ 
+ Headstat has been exhaustively tested, but - because it  deals with many
+ different analyses & errors - a real-world situation may corrupt results or
+ hang the PC.
+ 
+ First check configuration. Then F7 DeArchive the last line analysed and run
+ it again. If this is bad, then program is corrupt - reinstall.
+ 
+ If old lines run, but errors continue on the new line, then turn OFF all
+ analyses & run the line. If it hangs then the data file is corrupt. If OK
+ turn analyses ON one by one & run each time with one more analysis enabled.
+ 
+ Start with simple algorithms such as SP/FN Numbering. Then cables. Finally
+ sources. Gun Mask & Firing Sequence are the most complex, so add them last.
+ Line re-run with the logger may show up corrupt data.
+ 
+ If errors persist & ECL help is to no avail, please copy the data file,
+ together with current configuration to floppy. Send it, together with
+ Contractor Marine Information, Source & Streamer Documentation, to Keith
+ Capelin at ECL for the programmers to work on.
+
+Keyboard/Function Keys
+ 
+         Main Menu                            Run-Time Menu
+   F1  On-line Help System                <CR>  Start Run 
+   F2  Run (select data file)             <ESC> Exit to Main Menu
+   F3  Main Configuration                  F2   Set Waypoint
+   F4  Analysis Settings                   F8   Select SP Range
+   F5  Options
+   F6  Specifications
+   F7  Archive Utilities
+   F8  Graphics Settings
+   F10 Quit
+ 
+         During Run:   <ESC>   Interrupt Run
+ 
+         At End Run:   F7      View Statistics & Toggle Windows
+                       F8      Graphics
+                       F10     Return to Main Menu
+
+Mouse/More Keys
+ 
+ If you have set a Waypoint at the Run Time Summary, or if you Interrupt Run
+ with <ESC>, a menu will pop up with options:
+    <CR>   Continue Run          <ESC>  Abort Run
+     F2    Set Next Waypoint      F3    Change Main Configuration
+     F4    Change Analyses        F6    Change Specifications
+     F7    View Interim Stats     F1    Help
+ 
+     TAKE CARE CHANGING ANYTHING IN THE MIDDLE OF A RUN! STATS MUST BE
+     CAREFULLY INTERPRETED IF YOU MAKE CHANGES.  CHECK THE ERROR LOG.
+     NOTE THAT SPECS IN THE STATS REPORT (.TXT) ARE THOSE IN USE AT THE
+     END OF THE RUN.
+ 
+ Headstat has partial Mouse functionality; all menu systems can be called
+ with left button & aborted with right button; main program bottom line menu
+ can be clicked on; in general, when the mouse cursor is visible, the mouse
+ can be used;  note that the mouse is not enabled in data entry functions.
+
+How To Configure
+ 
+ (1) Program must know where to find & put files (drives/dirs)   F5 Options.
+ (2) Program must understand data (formats, offsets etc)         F3 Header.
+ (3) Define the Project (nos of vessels, sources, cables etc)    F3 Project.
+ (4) Define Sources (gun names, volumes, source numbers etc)     F3 Source.
+ (5) Define Cable Depths (RU names, numbers, cable numbers etc)  F3 Cable.
+ (6) Set specifications to be applied (sometimes specs 1 & 2)    F6 Specs.
+ (7) Enable analyses to be done & errors to be logged            F4 Anls.
+ (8) Define graphs to be made & their settings                   F8 Gfx.
+ (9) Select printer & define print settings (graphics only)      F3 Printer.
+ 
+ Each time you finish a portion - save it to disk (if you hang the machine
+ later then you won't have to fill in everything again!)  Once you save a
+ portion you can reload it. Configurations saved to disk will be autoloaded
+ when you next run the program.
+ 
+  Back up the completed configuration with F7 - Store Current Configuration.
+
+Drives/Directories
+ 
+ Headstat requires that:
+            Work Drive must be:  C  or  D
+         Archive Drive must be:  A  or  B  or  C  or  D
+     Program Directory must be:  \ECLSTAT
+ 
+ Installation Defaults are:
+               Default Program:  C:\ECLSTAT       (.EXE .CFG .HLP .ERR .SET)
+             Default Reporting:  C:\ECLSTAT\TEXT  (.TXT .LOG .SEQ .PRN .SPN)
+ Default Stored Configurations:  C:\ECLSTAT\CONFIG     (.ZFG)
+                  Default Data:  C:\ECLHEAD\DATA     (.DAT)
+               Default Archive:  A:\              (.ZIP)
+ 
+ Drives/Directories are set in F5 Options - View/Change.  The Data Files are
+ usually in \ECLHEAD\DATA because this is required by the ECLHeader Logger
+ program.
+ 
+ You may wish to have the report files sent to a sub-directory of your word
+ processor for convenient printing.
+
+Storage
+ 
+ Headstat configuration is stored in a number of small disk files:
+ 
+      HEADER.CFG   Header format definitions.
+     PROJECT.CFG   Project definition, vessels, number of sources & cables.
+      SOURCE.CFG   Detailed source definition.
+       CABLE.CFG   Detailed cable depth definition.
+       WINGS.CFG   Bird controller wing angles definition.
+    GUNDEPTH.CFG   Source depth sensors.
+    ANALYSIS.CFG   Analyses & error logging enabled YES/NO.
+     SPECSET.CFG   Detailed Specifications.
+    GRAPHICS.CFG   Graphics enabled YES/NO and settings.
+     OPTIONS.CFG   Drives/Directories & depth multipliers & offsets.
+     BKDRIVE.SET   Archive drive & directory.
+     PRINTER.SET   Printer definition & settings.
+ 
+ These files should be in the program directory \ECLSTAT. Note that if a
+ file is not needed it may not exist; i.e. if there are no gun depths then
+ GUNDEPTH.CFG may not exist, etc etc.
+
+On Setting Formats
+ 
+ Following contractors/formats are available:
+    GECO       -   All current modules (Geco Header V5 7/91).
+    WESTERN    -   Formats 3 & 4.
+    PRAKLA     -   SYN V2.3 512 byte twin cable/multisource.
+    DIGICON    -   DSS-240 Demux Trace0 2048 byte.
+ 
+ Geco formats are variable; all others are fixed. Format selection is from
+ F3 Header from the Main Menu.  See individual contractor formats help.
+ 
+ Note that if a contractor adds padding bytes to the nominal header length
+ then F5 Options/Additional Header Length can be set to read the extra bytes
+ & saved to disk as usual.
+ 
+ SSL, CGG & HGS formats are NOT currently implemented.
+ 
+ View/Change Formats show selected fixed format or allows setting of Geco
+ variable formats.  Save/Load to/from Disk saves/loads current configuration
+ as HEADER.CFG, which will be autoloaded at program start.
+
+More On Formatting
+ 
+ Reserved for additional information.
+
+Geco Formats 1
+ 
+ The Geco External Header System, currently (7/91) at V5, is a variable
+ length Header with well-defined individual module formats which can be
+ written in any order.
+ 
+ To configure for Geco Headers, first obtain from Geco the summary header
+ listing showing module definitions, lengths & start bytes. Then F3 Header
+ from Main Menu to select contractor Geco. This will initialise all Geco
+ formats to NOT USED; then go to View/Change Header & the empty Geco format
+ will pop up.
+ 
+ Set Header Length & then set formats in use, their start bytes & number of
+ units, where this is applicable. When View/Change Header is correct - save
+ this to disk (it will be saved as HEADER.CFG); this configuration will be
+ loaded from this file when the program is next run. If you have to change
+ this - remember to save it again to disk.
+ 
+ All analyses work for Geco, if the modules are present in the Geco Header.
+ See Geco Formats Help Pages 2 & 3 for more details on Geco configurations.
+
+Geco Formats 2
+ 
+ Get the format list from Geco and/or the ECLHeader Logger. Note that the
+ logger list begins at byte 1 & the GECO & HEADSTAT LISTS AT BYTE ZERO!
+ 
+ F3 Header - First set length.  Then set the offset (start byte) for each
+ item & its format name. If there is a variable number of units put it in.
+ 
+ All Norstar items are set to their individual start byte rather than the
+ start of the Norstar block:
+       SP, Julian Date, Time, Line Name, Area, Client, Vessel,
+       Ground Speed, Water Depth & System Heading.
+ 
+ The following are set to their block start byte:
+       Gun Controller, Remote Guns, Manifold, Gun Depths & System Timing.
+ 
+ Cable Depths & Wing Angles are set as below:
+       Cable Depths: - start of Depth Block
+        Wing Angles: - start of Wing Angle Block.
+                                                      SAVE TO DISK
+
+Geco Formats 3
+ 
+ The Geco gun and cable controller formats can contain a variable number of
+ guns or RUs, so the numbers of these, AS DEFINED IN THE GECO FORMAT LIST,
+ must be entered.  These are not necessarily the same as the numbers of
+ physical guns and RUs. EG: The GECO LITTON 2 generally has 64 guns defined,
+ but most jobs have only 30/40 guns used.
+ 
+ Take care: a 1 byte error will probably crash the PC.  Remember the 1 byte
+ difference between the ECLHeader (starts at 1) & the Geco & Headstat
+ listings (start at 0).
+ 
+ Make sure that the Chief Observer informs you of any changes in the Header
+ format.  Keep the listing safe for reference.
+ 
+ When changing from 2 boat to single boat shooting (or vice versa) they
+ should only switch off unneeded blocks such as GM2B or PULSECLK and NOT
+ delete them, but sometimes the Geco personnel are unaware of this. In fact,
+ it is much simpler for them to turn a block OFF, rather then delete it.
+ 
+ There should be no need for Geco header length changes during a prospect.
+
+Western Formats
+ 
+ Western Fmts 1 & 2 are NOT implemented (out-of-date & never used).
+ WESTERN FORMATS 3 & 4 ARE IMPLEMENTED & ARE FIXED LENGTH & DEFINITION.
+ 
+ Format 3 is nominally 384 bytes but the Western serial port feed puts out
+ 385 bytes each SP & this is the Header length used.
+ 
+ Format 4 is current for most vessels & is nominally 640 bytes, with again
+ one more byte output - 641 Bytes Header Length used.
+ 
+ These formats are selected by choosing Western as contractor from F3 Header
+ & then selecting the Format Number.  Save this to disk for autoload at next
+ program start. F3 View/Change Header shows selected format.
+ 
+ Western does NOT record FN, air pressure, bird wing angles or vessel speed.
+ Gun mask & firing sequence analysis are NOT implemented.
+
+Prakla Formats
+ 
+ Prakla SYN V2.3 is implemented with a header length of 512 bytes.  This is
+ for single or twin streamers (up to 32 depths) & multisource VZAD up to 60
+ guns.
+ 
+ Select Prakla as contractor with F3 Header & save to disk. View/Change
+ Header shows the format selected.
+ 
+ Prakla sometimes add padding bytes to their Header feed to the logger.
+ If this is the case you can use F5 Options/Additional Header Length & add
+ the correct number of bytes over 512 (Save to Disk when correct).
+ 
+ SYN V2.3 does not record FN, Julian Day or Bird Wing Angles.
+ Gun Mask & Firing Sequence analysis are NOT implemented.
+
+SSL Formats
+ 
+ No SSL formats are available.
+
+CGG Formats
+ 
+ No CGG formats are available.
+
+Digicon Formats
+ 
+ Digicon Trace0 is implemented with a length of 2048 bytes; source info is
+ via the Digicon MDSL (Marine Data Systems Logger); this format is part of
+ the DSS-240 Demux Field Tape Format (current 3/91).
+ 
+ Select Digicon as contractor with F3 Header & save to disk; F3 View/Change
+ Header shows selected format.
+ 
+ Up to 70 cable depths, 8 source depths & 126 guns may be analysed, with a
+ maximum of 4 local sources & 4 local cables.
+ 
+ Bird Wing Angles are not recorded. Gun Mask & Firing Sequence Analysis are
+ NOT implemented.
+
+HGS Formats
+ 
+ No HGS formats are available.
+
+Project
+ 
+ F3 Project - Text fields for:
+         Company, Project, Contractor, Vessel, Client Rep,
+         Seismic, Navigation, Source & Streamer Names.
+ 
+ Speed, Depth, Volume & Pressure Units are selected here.
+ SP Interval (always in Metres) is chosen here.
+ 
+ Numbers of the following are to be set:
+        Vessels, Local & Remote Sources & Local & Remote Streamers
+ 
+ MultiVessel/Source/Streamer configuration can be difficult. The Project
+ must be configured with correct names & numbers for the above.  Source
+ firing sequence length must be the sum of local & remote sources and two
+ vessels must be set if there are remote sources.
+ 
+ Use capital letters for: Company, Project, Contractor, Vessel & Source &
+ Cable Names - looks better in Graphics and stands out in the Error Log!
+
+Source
+ 
+ F3 Source - Define each gun in terms of its Name, Number, Source & Volume.
+             Save to disk (SOURCE.CFG).
+ 
+ To change a gun field the gun must be deleted from the list and then added
+ back in with the new value.  Therefore, at the start of a project, it is
+ simpler to delete the old SOURCE.CFG and start again.
+ 
+ F3 View Source displays the guns in order by gun number, so it is sensible
+ to add them in from gun 1 up. 
+ 
+ For Litton & Prakla controllers you  assign the source by source number,
+ agreeing with the source name you have defined in Project configuration.
+ 
+ Geco Gunda uses the first letter of the name (P/S), where S is starboard &
+ is local source 1.  
+ 
+ The gun name should indicate location. The volume is either CC or CUINS.
+ Both Volume Units & Source Names are set F3 Project.
+
+Cable Depth
+ 
+ F3 Cable Depths - Define each depth in terms of its Name, Number & Cable.
+                   Save RUs (remote units) to Disk (CABLE.CFG).
+ 
+ To change an RU field the RU must be deleted from the list and then added
+ back in with the new value.  Therefore, at the start of a project, it is
+ simpler to delete the old CABLE.CFG and start again.
+ 
+ F3 View Cable Depths displays the RUs in order by RU number, so it is
+ sensible to add them in from RU 1 up.
+ 
+ RU names should indicate location.
+ 
+ Cable names are set in F3 Project.
+ 
+ Cable depth multiplier is set in F5 Options.
+
+Wing Angle
+ 
+ F3 Wing Angles - Define each wing in terms of its Name, Number & Cable.
+                  Save WUs (wing units) to Disk (WINGS.CFG).
+ 
+ To change an WU field the WU must be deleted from the list and then added
+ back in with the new value.  Therefore, at the start of a project, it is
+ simpler to delete the old WINGS.CFG and start again.
+ 
+ F3 View Wing Angles displays the WUs in order by WU number, so it is
+ sensible to add them in from WU 1 up.
+ 
+ WU names should indicate location.
+ 
+ Cable names are set in F3 Project.
+
+Gun Depth
+ 
+ F3 Gun Depths - Define each depth in terms of its Name, Number & Source.
+                 Save GUs (gun depth units) to Disk (GUNDEPTH.CFG).
+ 
+ To change an DU field the DU must be deleted from the list and then added
+ back in with the new value.  Therefore, at the start of a project, it is
+ simpler to delete the old GUNDEPTH.CFG and start again.
+ 
+ F3 View Gun Depths displays the DUs in order by DU number, so it is
+ sensible to add them in from DU 1 up.
+ 
+ DU names should indicate location.
+ 
+ Source names are set in F3 Project.
+ 
+ Gun depth multiplier & offset is set in F5 Options.
+
+Printer
+ 
+ F3 Printer - Select printer & print settings & save to disk (PRINTER.CFG).
+ Drivers:  EPSON MX, EPSON FX, EPSON LQ, HP LASERJET,
+           HP THINKJET, TOSHIBA 24 PIN.
+   Ports:  LPT1 & LPT2.
+  
+ Lines/Page & Top & Left Margins can be set (Epson Printers only).
+ 
+ Graphs/Page sets when a formfeed will be issued (normally 6 or 8).
+ 
+ Resolution:  Sets print mode. Higher the resolution the finer the print but
+              speed is reduced.
+ 
+ X & Y Multipliers:  Sets print size. Trial & error for different printers.
+ 
+ DEFAULTS:  EPSON LQ   LPT1   Lines/Page: 66  Top Margin: 5  Left Margin: 20
+            Resolution: 5 (24 pin double density)
+            X Multiplier: 1.00    Y Multiplier: 2.00
+
+SP/FN Numbering
+ 
+ The SP/FN Numbering algorithm checks for jumps & freezes in the SP & FN
+ numbering sequences.
+ 
+ It must first know the integer values by which shotpoints & file numbers
+ are expected to change each SP. These are called the SP & FN Integers & are
+ set in F6 Specs.  They are both invariably 1.
+ 
+ The algorithm must also know in which direction the SPs & FNs are expected
+ to change & it finds this out from the SP & FN range at the start of a run.
+ This is indicated by + or - or ? Change Flags at the Run Rime Summary.
+ 
+ F4 Do Analysis, F4 Log Errors & F8 Enable Graphics all operate on this
+ algorithm.
+  
+ The SP ERRORS and FN ERRORS graphs are of the 'fixed stikogram' type, where
+ bar UP indicates a number jump & bar DOWN a number freeze.
+
+Cable Depth & Comms
+ 
+ The algorithm checks each depth remote unit (RU) sensor against a window.
+ There are two windows, Spec1 & Spec 2, both set in F6 Specs. Normally Spec1
+ will be contract spec & Spec2 more relaxed. RUs are defined in F3 Cable
+ Depths & each RU is assigned to a cable, so that depths can be analysed on
+ a per cable basis, as well as for each RU.
+ 
+ If F4 Analysis is ON then stats will be made to disk & screen.
+ If F4 Log errors is also ON then RU errors will be logged to screen & disk.
+ 
+ If F4 Analyse Spec1 & F8 Graphics are ON then a 'variable stikogram' graph
+ will be made.
+ 
+ Only Geco presents the RU No Response Bit in the External Header & the
+ cable depth communications algorithm checks this bit, provided F4 Analysis
+ is ON & either Depth Spec1 or Spec2 Analysis are also ON.
+ 
+ Communications stats are presented independantly & on a per cable basis &
+ for each RU.
+
+Bird Wing Angles
+ 
+ Algorithm checks depth controller wing angle against a Spec Window. Only
+ Geco records wing angles (Syntron & Digicourse).  Wing angle spec is in
+ degrees (+/-) & is set in F6 Specs.
+ 
+ If F4 Analysis is ON, then stats will be made to screen & disk. Stats are
+ MIN, MEAN, MAX & % SP>Spec. Also recorded are % ACTIVITY & AVERAGE CHANGE.
+ 
+ Activity is the % SPs with a change in wing angle. Average change is the
+ sum of the wing angle changes, divided by the number of active SPs. These
+ numbers indicate how hard the controller is having to work.
+ 
+ If F4 Log Errors is also ON, then any wing angle outside spec will be sent
+ to screen and disk. Normally Log Errors will be OFF, as even well ballasted
+ streamers will generate a huge number of errors.
+ 
+ Wing angle analysis is for evaluating cable stability & will not usually be
+ required by the client.
+
+Gun Timing
+ 
+ MASTER SOURCE ALGORITHM - TIMING SPEC 1 OR 2 MUST BE ON FOR OTHER SOURCE
+ ALGORITHMS TO WORK. Two timing windows (F6 Specs). Spec1 will normally be
+ the contract spec & Spec2 more relaxed. The usual settings are 1 & 2 mSec.
+ 
+ If F4 Analysis is ON then stats will be made to screen & disk. If F4 Log
+ Errors is ON then timing errors will be sent to screen & disk.
+ 
+ Stats are reported Overall (combined sources), for individual sources & for
+ each gun. The misfire % is the number of SPs with a timing error divided by
+ the number of SPs the gun (or source, or overall) was enabled. A NOFIRE,
+ when the gun was enabled but did not fire, is NOT counted as a timing error,
+ since it will be contained in the source volume calculations, i.e. it is
+ ignored providing volume spec is met.
+ 
+ The maximum permitted misfire % is set in F6 Specs; when stats are viewed
+ on screen at end run (F7), percentages above this spec will be highlighted
+ in reverse video.
+
+Misfire Definition
+ 
+ Headstat defines a misfire SP as a SP with at least one enabled gun that
+ fired outside the timing spec window (calculated separately for Spec 1 &
+ Spec 2).
+ 
+ No other factors apply.
+ 
+ Guns that did not fire are not included in the enabled volume calculation &
+ therefore will show up in the volume stats if they caused the volume to
+ drop below spec.
+
+Consecutive Misfires
+ 
+ Algorithm applies to timing errors the consecutive misfire maximum set in
+ F6 Specs, on an individual source basis.
+ 
+ If F4 Analysis is ON then consecutive misfire stats will be reported to
+ screen & disk for each source.
+ 
+ If F4 Log Errors is ON, then any SP where the consecutive misfire spec for
+ a source has been exceeded, will be logged to screen & disk & the number
+ of consecutive misfires will be included.
+
+Series Misfires
+ 
+ Algorithm applies to timing errors the series misfire maximum set in F6
+ Specs, on an individual source basis.
+ 
+ If F4 Analysis is ON then series misfire stats will be reported to screen &
+ disk for each source.
+ 
+ If F4 Log Errors is ON, then any SP where the series misfire spec for a
+ source has been exceeded, will be logged to screen & disk & the number
+ of series misfires will be included.
+ 
+ Standard misfire series specs are:
+             4  in the last  8
+             8  in the last  12
+            20  in the last  40
+            and so on.
+
+Running Misfire %
+ 
+ Algorithm applies to timing errors the permitted misfire maximum set in F6
+ Specs, on an individual source basis.
+ 
+ It does not add any additional stats but enables the QC rep to watch the
+ misfire % (if above the permitted maximum) for each source during the stats
+ run.
+ 
+ If F4 Analysis & F4 Log Errors are both ON then the running misfire % will
+ be calculated for each SP and presented to screen & disk, if above the
+ permitted maximum per cent.
+
+Xfiring
+ 
+ There are 2 origins for source reporting; the gun controller & the gun mask.
+ 
+ Both check for overfiring & crossfiring & no-firing sources.
+ 
+ The gun controller (LRS-100, GUNDA, VZAD) only checks the local sources
+ since remote controller information is not sent over. If there are no
+ remote sources, the crossfiring algorithm will report from the controller
+ if no local source fired.  If there are remote sources, the controller will
+ not report no source fired since it does not know remote status. Controller
+ crossfire reporting is prefixed with "CONTROLLER - ".
+ 
+ The gun mask crossfire algorithm checks all sources & reports no source
+ fired or more than one source fired.  Gun mask reporting is prefixed with
+ "GUN MASK -".
+ 
+ Gun controller crossfire stats are contained in the Overall Source Summary
+ & the gun mask crossfire reporting is in the gun mask stats block.
+
+Source Volume
+ 
+ Algorithm calculates the volume of enabled guns that fired, for each SP &
+ for each source (overfiring sources are handled correctly).
+ 
+ Volume specs are set in F6 Specs.  Spec1 is normally contract spec & Spec2
+ more relaxed.
+ 
+ If F4 Analysis is ON then volume stats are made to screen and disk. SOL &
+ EOL volumes for each source are presented to screen stats & error log & to
+ disk stats & error log.
+ 
+ If F4 Log Errors is ON the the SP where a source drops below spec is logged
+ to screen & disk.  If the source comes back up to volume spec later, then
+ this too is logged.
+ 
+ Stats show the percentage of SP below each volume spec.
+ 
+ Either Timing Spec1 or Timing Spec2 must be ON for volume stats to work.
+
+Source Depth
+ 
+ Algorithm checks each depth sensor against a spec, set in F6 Specs, and
+ reports errors on a per source basis.
+ 
+ If F4 Analysis is ON then source depth stats will be made for each source &
+ presented at run end to screen & disk.
+ 
+ If F4 Log Errors is ON then depth errors will be logged to screen & disk.
+ 
+ Note that Gun Depth Multiplier & Offset are set in F5 Options.
+ 
+ Depth Units are set in F3 Project.
+
+Air Pressure
+ 
+ Algorithm checks air pressure against one or both of two specs, set in F6
+ Specs.  Spec1 is normally contract spec & Spec2 more relaxed.
+ 
+ If F4 Analysis is ON then pressure stats will be made to screen & disk at
+ the end of a run.  SOL & EOL pressures will also be reported. The % SP
+ below spe will be presented.
+ 
+ If F4 Log Errors is ON then the SP where pressure dropped below spec will
+ be logged; if later the pressure comes back to spec, then this will also be
+ logged.
+ 
+ Pressure Units are set in F3 Project.
+
+Firing Sequence
+ 
+ Algorithm notes the firing sequence length, set in F3 Project, & the
+ required firing sequence order, set in F6 Specs. It monitors gun masks.
+ 
+ Algorithm is a feedback loop. It checks the current firing cycle against
+ previous cycle (initially the preset order). If there is a temporary
+ change in the sequence it reports a change.  If this change creates a new
+ sequence then it reports a new sequence.
+ 
+ Firing sequence stats contain the initial firing sequence, referred to the
+ required firing sequence, & the total number of changes & new sequences.
+ 
+ Firing Sequence has a separate report file to itself, <filename>.SEQ &
+ errors are logged to this file, while stats are still made to .TXT
+ 
+ F4 Analysis & F4 Log Errors must be ON.
+ 
+ Note: Currently Geco only; numbering -  if there are 2 local & 2 remote
+ sources, they would be numbered 1 to 4, with 1 & 2 being local.
+
+Litton LRS-100
+ 
+ The Litton LRS-100 gun controller delivers gun timing in increments of 0.25
+ milliseconds.
+ 
+ A peculiarity of the Litton digital output to the External Header is that
+ it employs the same bit combination to flag NOFIRES & AUTOFIRES.  Also, the
+ AUTOFIRES are flagged on the next SP after they occurred.
+ 
+ Therefore Headstat does not attempt to evaluate Autofires, but it does list
+ the total NOFIRES/AUTOFIRES, overall, for each source, & for every gun.
+ 
+ Geco Littons employ fixed time break & Headstat reporting is correct.
+ 
+ Western Littons use a volume TB calculation and correct gun error times to
+ this TB time.  This is done externally to the Litton, & the error times
+ recorded on the External Header are before volume TB adjustment.
+ 
+ Headstat does NOT apply volume TB & therefore Headstat error times will not
+ always be correct. The difference should be minor in  most cases, but care
+ should be taken in interpreting Western Litton misfire statistics.
+
+Geco GUNDA
+ 
+ The Geco GUNDA gun controller delivers gun timing in increments of 0.1
+ milliseconds.  It handles a variable number of guns, up to a combined
+ total of 64, in 2 sources.
+ 
+ Autofires are not recorded.
+ 
+ NOFIRES are flagged & Headstat reports nofire totals, overall, for each
+ source, & for every gun.
+ 
+ Fixed Time Break is used - Headstat timing error reports are correct.
+
+Prakla VZAD
+ 
+ The Prakla VZAD gun controller delivers gun timing in increments of 0.1
+ milliseconds.
+ 
+ AUTOFIRES & NOFIRES are correctly logged, provided of course that an
+ autofire has been detected.
+ 
+ Fixed time break is used - Headstat timing error reports are correct.
+ 
+ Note that FTB Timing can be analysed under System Timing Analysis Function
+ & for VZAD adds together FTB1 + FTB2 + FTB3 to produce a summed TB which
+ has a nominal value of 128mS (sometimes 126 or 127).
+
+Digicon MDSL
+ 
+ The Digicon Marine Data Systems Logger, implemented in Trace0 (3/91), can
+ handle up to 126 guns; 8 source depths can be logged.
+ 
+ Timing is in 0.1mS increments & both NOFIRES & AUTOFIRES are correctly
+ flagged.
+ 
+ Fixed Time Break is employed - HeadStat timing error reports are correct.
+ 
+ Note that TB Echo timing in Trace0 can be QCd under the System Timing
+ Analysis function - this should always be 64.0mS.
+
+Geco Gun Mask
+ 
+ Geco has a gun mask system, whereby the actual fire pulse to each gun is
+ detected can be recorded on the External Header. In two boat shooting the
+ gun mask for each vessel can be sent to the other vessel & the External
+ Headers contain both local & remote gun masks.
+ 
+ Currently the system is limited to 2 local & 2 remote sources of 4 arrays
+ of 8 guns per array. Nomenclature is that STBD source is source 1.
+ 
+ If F4 Analysis is ON then Headstat checks gun masks & provides stats to
+ screen & disk at run end. Stats include, SPs No Source Fired, SPs more than
+ 1 Source Fired, & Stats for each source, including the number of SPs where
+ less than a certain number of guns fired.  This number is set in F6 Specs.
+ 
+ If F4 Log Errors is ON then gun mask errors are logged to screen & disk.
+ 
+ Note that Firing Sequence Algorithm also employs the gun masks.
+
+Western Status
+ 
+ Algorithm not implemented but it will employ the Western Local & Remote
+ Status Words in place of the Geco gun masks, to QC source firing & source
+ firing sequence.
+
+System Status
+ 
+    Disk Status:
+ System status checks drives A through E (if they exist) for capacity & free
+ space.
+ 
+    Memory:
+ If the Microsoft HIMEM.SYS device driver is installed, then EXTENDED memory
+ will not be reported correctly.
+ 
+    Printer:
+ If a print spooler program is installed, then PRINTER READY only indicates
+ the ready state of the print spooler. Note: some printers do not report
+ their status.
+ 
+    <ALT-M>:
+ Walks through the far heap, displaying memory allocation & status.
+ This is primarily a programmers debug function.
+
+Depth Units
+ 
+ First decide whether to report depth in METRES or FEET in F3 Project
+ Configuration.
+ 
+ Then set multipliers/offsets in F5 View/Change Options:
+       (FEET to METRES 0.31    METRES to FEET 3.28)
+ 
+ Cable Depths:  Multiplier:  Western reports in FEET; Geco/Prakla in METRES.
+ 
+ Fathometer:    Multiplier first, then add Draft. (Note that draft is to be
+                added AFTER water depth has been multiplied).
+ 
+ Gun Depths:    Multiplier first, then add Offset. (gun depth sensors are
+                rarely at gun depth; again - add Offset AFTER Multiplier).
+
+Other Units
+ 
+ Speed, Volume & Pressure Units are all set in F3 Project Configuration.
+ 
+ Volume & Pressure Units can be CU/INS or CC & PSI or BARS just for display
+ (no calculations are affected).
+ 
+ Speed can be set to KNOTS or M/S; affects the average speed reported at the
+ Run Time Summary (AV SPEED = PRODUCTION / TIME).  Therefore this depends on
+ both the method of calculating production & also the SP Interval (Note that
+ SP Interval is set in F3 Project Configuration).
+ 
+ Speed setting also affects Speed Along Track algorithm (Geco only).
+ 
+ Production Calculation Options are set in F5 Options and you can:
+      0 = Subtract 1 SP from Total Range
+      1 = Use the Total Range
+      2 = Add 1 SP to the Total Range (most usual setting)
+
+Analysis Settings
+ 
+ Use F4 Analysis to choose: (1) Which analyses to perform.
+                            (2) Whether errors encountered should be logged.
+ Note that - unlike earlier versions of Headstat -  the errors you see on
+ screen during a run will be the errors in the Error Log file (.LOG):
+ 
+ Note that Graphs can not be made unless their Analysis has been turned ON.
+ 
+ Where there are two sets of specs, e.g. Depth Spec 1 & Depth Spec 2, you
+ should have Spec 1 enabled if you wish to do Spec 2 as well.  The idea of
+ two sets of specs is that Spec 1 should be the nominal contract Spec &
+ Spec 2 is more generous 'real world' spec often applied in practise.
+ 
+ ALWAYS have Spec 1 ON if you want Spec 2 as well.
+
+Specifications
+ 
+ Specifications are set by F6 Main Menu.
+ 
+ Where there are two sets of specs for an item, the concept is for Spec 1
+ to be set at Contract Spec & Spec 2 somewhat more generous.  This gives a
+ better feel for how badly an item has exceeded the Contract Spec.
+ 
+ If you only want to use a single spec - use Spec 1.  Don't run Spec 2
+ without Spec 1.
+ 
+ Although Headstat attempts to ignore bad data such as negative depths &
+ times, it can be fooled. If odd results appear, then a line re-run with the
+ ECLHeader Logger Program over the doubtful portion of the line may reveal
+ the cause.
+ 
+ A spec can be changed during a run (eg - cable depth) by either setting a
+ waypoint or manually interrupting the run, but note that, although the
+ number of errors reported will be correct, the specs listed in the reports
+ will be those in use at the end of the run.
+
+Fixed Stikograms
+
+ The concept is the simple semaphore.
+ 
+ As the graph reads from FSP at the left to LSP at the right, the graph
+ consists of a straight horizontal line in the middle of the vertical axis.
+ 
+ Two types of error can be 'flagged' - they are BAR UP and BAR DOWN
+ 
+ Fixed Stikogram graphs are:
+       SP ERRORS    ......   BAR UP = SP Jump   BAR DOWN = SP Freeze
+       FN ERRORS    ......   BAR UP = FN Jump   BAR DOWN = FN Freeze
+       SP TIMING ERRORS ..   BAR UP = Long SP   BAR DOWN = Short SP
+       FIRING SEQUENCE ...   BAR UP = New Seq   BAR DOWN = Seq Change
+       GUN MASK ERRORS ...   BAR UP = Too Many  BAR DOWN = None Fired
+ 
+ If no errors were found the graph will not be made: instead, the result
+ will be posted in the NO-ERROR BOX after the LINE HEADER BOX.
+
+Variable Stikograms
+ 
+ The 'variable stikogram' applies the same concept of seeing only a straight
+ line unless errors occurr, but differs from the 'fixed stikogram' in that
+ the size of the vertical BAR is related to the magnitude of the error.
+ 
+ GUN TIMING ERRORS:
+      Scale Line: BOTTOM     Bar Direction: UP with increasing error time.
+ AIR PRESSURE ERRORS:
+      Scale Line: TOP        Bar Direction: DOWN with decreasing pressure.
+ SOURCE VOLUME ERRORS:
+      Scale Line: TOP        Bar Direction: DOWN with decreasing volume.
+ SYSTEM TIMING ERRORS:
+      Scale Line: MIDDLE     Bar Direction: UP/DOWN for short/long times.
+ CABLE DEPTH ERRORS:
+      Scale Line: VARIABLE   Bar Direction: UP/DOWN for shallow/deep depths.
+ GUN DEPTH ERRORS:
+      Scale Line: VARIABLE   Bar Direction: UP/DOWN for shallow/deep depths.
+ 
+ If no errors were found the graph will not be made: instead, the result
+ will be posted in the NO-ERROR BOX after the LINE HEADER BOX.
+
+No Error Blocks
+ 
+ If a graph is requested AND no errors are found, then the empty graph will
+ NOT be made.
+ 
+ Instead, a message will be placed inside the NO-ERROR TEXT BOX, which
+ follows the LINE HEADER BOX (if there are any graphs without errors).
+ 
+ The purpose of this is to reduce the number of graphs printed; on a normal
+ 'good' line there should be only one page of graphics.
+
+Other Graphics
+ 
+ The LINE HEADER BOX is a text block at the top of the first graphics page.
+ It is always printed & contains:
+    LINE ID: From ECLHeader Logger Comment Field   DATA FILE: <filename>.DAT
+ 
+    Client Company, Project Name, Contractor Company & Vessel:  all from
+    F3 Project Definition (since only Geco puts in text, this info has to be
+    entered by the QC rep when configuring Headstat).
+    SP and FN Range, Total SPs processed & Total SPs found corrupt.
+ 
+ The Initial Firing Sequence text block is part of Firing Sequence Analysis.
+ It is printed if the format is Geco Gun Masks & if F4 Analysis & F8 Enable
+ Graphics are both ON. It contains the initial source sequence:
+                SP:    FN:    TIME:    SOURCE FIRED:
+
+General Graphics Setup
+ 
+ F8 Graphics sets the graphs to be made during a run.  The graphs will not
+ be made unless F4 Analysis is also ON.
+ 
+    Suggested Settings:
+ Graph ------------- Scale Range --- Spec Line
+ Cable Depth         2 Metres        1 Metre.
+ Source Timing       5 mS.
+ Source Volume       500 CU/INS.
+ Air Pressure        100 PSI.
+ System Timing       1 mS.
+ Gun Depth           4 Metres        2 Metre.
+ 
+ SP & FN Integer, Gun Masks, Firing Sequence & SP Timing have fixed scales.
+ 
+ Scale Range & Spec Line can be altered after the run just prior to printing
+ & graphs can be turned OFF.  Do not turn extra graphs ON at this time since
+ memory is allocated at run start.  IT WILL CRASH THE PC!
+
+Printer Resolutions
+ EPSON MX,FX      0      Single Density    Normal Speed
+                  1      DOUBLE DENSITY    HALF
+                  2      Double Density    Normal
+                  3      Quad Density      Quarter
+ EPSON LQ         0      Single Density    Normal   8 Pin
+                  1      Double Density    Half     8 P
+                  2      Double Density    Normal   8 P
+                  3      Quad Density      Quarter  8 P
+                  4      Single Density    Normal  24 P
+                  5      DOUBLE DENSITY    HALF    24 PIN
+                  6      CRT III Density   Normal  24 P
+                  7      Triple Density    Third   24 P
+                  8      Hex Density       Sixth   24 P
+ TOSHIBA 24 PIN   0      180 x 180 Image   Normal
+ & HP THINK JET   1      180 x 360 IMAGE   HALF
+ HP LASER JET     0      75 DPI            Normal
+                  1      100 DPI           SLOWER
+                  2      150 DPI           Slower
+                  3      300 DPI           Slowest
+
+Printer Multipliers
+ 
+ The X & Y Multipliers are applied as multipliers to the number of screen
+ pixels & sent to the printer.  They must both be greater then zero.
+ 
+ X Multiplier is horizontal & Y Multiplier is vertical.
+ 
+ In practical terms they affect the size of the plot sent to the printer, &
+ increasing them increases the plot size.
+ 
+ If the multipliers are too large (i.e. you are sending too many dots to the
+ printer), the graph will overrun the width of the page. In some cases the
+ graph may not print out at all.
+ 
+ Because of the way that the fonts are implemented, it is recommended where
+ possible, to use whole numbers for the multipliers; however, you can
+ experiment with intermediate values & may get a pleasing appearance.
+ 
+ A typical setting would be, EPSON LQ, RES 5, X MULT 1.0, Y MULT 2.0, with
+ GRAPHS PER PAGE 8, LINES 72 (12" paper), TOP MARGIN 5, LEFT MARGIN 20.
+
+Other Printer Settings
+ 
+ Graphs per Page must be a multiple of 2, as there are 2 graphs on a screen.
+ 
+ This setting determines after how many printed graphs a page feed (form
+ feed) will be issued.  Normal values are 6 or 8 (11" or 12" paper).
+ 
+ Lines per Page will make the form feeds reset to top of page correctly
+ when using fan-fold paper.  It doesn't affect cut page printers like the
+ HP Laser Jet or other printers set up with paper trays.
+ 
+ Left margin shifts the grapghs to the right as you's expect. Experiment
+ with this in combination with Resolution & X Multiplier.
+ 
+ Top Margin gives you space at the top of each page.  Again experiment.
+ 
+ Top & Left Margins & Lines per Page are only implemented for the range of
+ Epson printer drivers -  future versions will have more flexibility.
+
+Archiving Files
+ 
+ F7 File Archive Utilities employ PKZIP.EXE & PKUNZIP.EXE (in \ECLSTAT) to
+ compress/extract files. A 1.6MB .DAT file will compress to c. 500KB!
+ 
+ Archive drive can be A to E, normally floppy drive A or B; archive drive &
+ directory are set in F5 Options and, if saved to disk, held in BKDRIVE.SET
+ in \ECLSTAT.
+ 
+ Archiving a line includes data (.DAT) & configuration (.CFG) files & stores
+ them as <filename>.ZIP:
+ 
+ When a .ZIPped line is DeArchived, the data file is extracted to the data
+ directory & the .CFG files to \ECLSTAT; the .CFG files are read & the
+ configuration updated; the line is automatically selected & the Run Time
+ Summary presented;  press <ENTER> to run stats.
+ 
+ Current configuration can be saved to the directory named in F5 Options
+ (default is \ECLSTAT\CONFIG). Stored configurations have the extension .ZFG
+ & can be retrieved, with automatic configuration update.
+
+Listing SP/FN
+ 
+ Sometimes, particularly in dual vessel projects, the shotpoints & file
+ numbers become very mixed up, due to radio link problems, tape hang-ups,
+ or poor navigation. This may also result in source mixups, overfiring, etc.
+ 
+ F5 Options - Make SP/FN List provides the facility to dump a range of SPs
+ to a disk file.  This file has the data file name & the extension .SPN &
+ always contains the shotpoint number.
+ 
+ If file numbers are recorded they will also be listed.
+ If the SP time is recorded, it will be listed too.
+ If Geco Gun Masks are recorded & Gun Mask Analysis is set ON, then the
+ source or sources that fired on each SP will also be listed.
+ 
+   EG:         SP     FN     TIME       SOURCE
+               201    201    18:12:01   STBD
+               203    202    18:12:20   STBD  PORT
+               204    203    18:12:30
+               205    204    18:12:39   STBD
+
+System Timing
+ 
+ The system timing algorithm checks intervessel timing in two boat shooting
+ (Geco format). In Prakla Syn V2 it monitors FTB. The spec is a base time
+ and a valid range window, both in mS. If graphics is enabled, a 'variable
+ stikogram' graph is generated.
+ 
+ Note that if analyse system timing is ON, then a special report file is
+ generated;  this file has the same filename as the  data file, but the
+ suffix .PRN; as this implies, it is in Lotus .PRN format & can be read by
+ 1-2-3 for graphics or statistical analysis. (Geco & Prakla only).
+ File format:
+    GECO GM2B or PULSECLK:
+       1st record (field titles)  SP,TSTAMP, CLOSURE, LINK.
+       followed by data records of the above.
+    PRAKLA SYN V2.0:
+       1st record (field titles)  SP, FTB1, FTB2, FTB3, FTB.
+       followed by data records of the above.
+ 
+ For details of .PRN format - consult Lotus 1-2-3 Manual.
+
+Water Depth
+ 
+ The Water Depth Algorithm just checks fathometer performance.
+ 
+ Water Depth has its units set in F3 Project - Depth Units & its Multiplier
+ & Draft set in F5 Options - View/Change.  Specs for MIN & MAX water depth
+ are set in F6 Specs.
+ 
+ If F4 Do Analysis is ON, water depth stats will be generated on screen &
+ logged to disk in (.TXT) LINE STATISTICS; if F4 Log Errors is ON then depth
+ errors will be shown on screen & sent to disk (.LOG) ERROR LOG.
+ 
+ Even if F4 Do Analysis is OFF, provided water depth is in the header format
+ in use, SOL and EOL water depths will be shown on screen at the Run Time
+ Summary & logged to disk (.TXT) LINE SUMMARY (stats first page).
+ 
+ Water Depth stats consist of:
+       Minimum Depth:      Maximum Depth:     SPs Outside Spec Window:
+ 
+ No water depth graphics are implemented.
+
+SP Time Interval
+ The SP Time Interval algorithm calculates the time difference between
+ successive SPs and applies a time window, which is set in F6 Specs.
+ 
+ The minimum time will usually be the recotd length plus system overhead, so
+ that any time shorter than this represents a double closure. The max time
+ would normally be something like twice the standard shooting speed interval
+ so that any longer times would probably be lost shotpoints.
+ 
+ If F4 Do Analysis is ON, time interval stats are made.  If F4 Log Errors is
+ also ON, then times outside the spec window are flagged to screen & disk.
+ 
+ If F4 Do Analysis & F8 Enable Graphics are ON, then a SP TIME INTERVAL
+ graph will be made. This is of the 'fixed stikogram' type, where BAR UP
+ means a LONG SP and BAR DOWN a SHORT SP.
+ 
+ Note that Geco logs time to 0.01 sec, but Western only to 1 second.
+ Stats are:
+         MIN:   MEAN:   MAX:   CORRUPT:   SP < MIN:   SP > MAX:
+ Corrupt means 00:00:00.00 time, usually a nav or comms error.
+
+Speed Along Track
+ 
+ Sometimes, especially when acquiring deep target horizons, the client may
+ ask for shooting speed to be limited in order to reduce smear.
+ 
+ Geco logs ground speed as two components, along & across line direction.
+ Western & Prakla do not record speed.
+ 
+ The Speed Along Track algorithm simply checks that the speed does not
+ exceed a maximum, which is set in F6 Specs. Speed units (KNOTS or M/S) are
+ set in F3 Project & converted automatically.
+ 
+ If F4 Do Analysis is ON, stats will be made, & SOL and EOL speed will be
+ logged to screen & disk. If F4 Log errors is ON then SPs with speeds above
+ the spec will be flagged to screen & disk.
+ Stats are:
+   MIN:  MEAN:  MAX:  DMEAN:  CORRUPT:  ANALYSED:  SOL:  EOL:  % > SPEC:
+ 
+ Corrupt is a zero speed.  DMean is the mean of the absolute differences
+ between adjacent SPs & is a good index of speed variations as it increases
+ with bad weather and also with bad navigation.
+
+Options
+ 
+ F5 Options contains various configurations & utilities; drive & directory
+ settings, system status, depth multipliers & offsets, the SP/FN/Time/Gun
+ Mask listing utility, and the method of calculating production.
+ 
+ The ECLHeader Logger adds a SP prefix to each record & also creates a
+ prefix to the data file which contains an ID string, the header length &
+ various other data.
+ 
+ F5 Options can change the internal format for analysing .DAT files,
+ primarily to retain compatibility with older versions of the ECLHeader
+ Logger, but also to enable the analysis of raw header data.  These settings
+ should NOT be altered unless you really know what you are doing. However,
+ if raw data analysis is required, the following settings should be changed
+ to 0:         Record Prefix Length  (normally 6).
+               Comment Field Length  (normally 20).
+              Total Preamble Offset  (normally 4096).
+ 
+ See "Drives/Directories" in Configuration Help.
+
+Statistics Window
+ 
+ Statistics can be viewed at the end of a run with F7 View Statistics, prior
+ to returning to the main menu. This view is essentially identical to the
+ stats report file (.TXT) which will have been logged to disk.
+ 
+ This view consists of up to 15 screen pages, depending on configuration &
+ analyses set.  If there is insufficient memory available then the view will
+ not be presented; instead the file viewer utility menu is invoked & stats
+ can be viewed with this.
+ 
+ At the view, F7 or <ESC> returns to the end of run error display. F2 calls
+ the file viewer to look at report disk files.
+ Normally at run end you would view the stats, then view the graphs, then
+ print the graphs, then archive the line & lastly, exit Headstat to print
+ the text reports.
+
+Report Files
+ 
+ A file view utility is provided which allows the report files to be viewed;
+ (Stats .TXT, Errors .LOG, Sequence .SEQ, Timing .PRN & SP/FN Listsing .SPN)
+ 
+ This utility can be called from F5 Options & also end stats run with F2.
+ 
+ If there is not enough memory at end run to display the stats window, then
+ the file viewer menu is invoked automatically.
+ 
+ The file viewer allows you to change view directories & look at any files
+ on your computer.
+
+Video Modes
+ 
+ Since the program has to cope with various different screen types and
+ video boards, it is designed to make use of colour where it is told that
+ the colour hardware exists.  It therefore defaults to colour mode.
+ 
+ Toshiba 3100e computers tell the software that they have a CGA colour
+ screen and present a 4 density blazing orange display.  This is NOT a
+ program bug; note that WordPerfect also defaults to this mode when run on a
+ 3100e.
+ 
+ To achieve a pleasing display with a Toshiba Plasma screen you must put
+ the machine into black and white mode prior to running the stats program.
+ 
+ This is done by typing MODE BW80 <Enter> at the DOS prompt.  The best
+ course is to include this command in your AUTOEXEC.BAT file and then you
+ will always get the correct display.
+
+Contractor Data
+ 
+ At the present time only Geco allows input of text fields to theExternal
+ Header:
+                 Line Name      (8 chars NORSTAR2 - 16 chars NORSTAR3).
+                 Client Name    (16 chars).
+                 Project Name   (16 chars).
+                 Vessel Name:   (16 chars).
+ 
+ Headstat will, if configured, read the above; they will then be presented
+ on screen at   (1) Run Time Summary.
+                (2) Viewing Statistics (under 'Contractor Data').
+ They will also be logged to disk in 'LINE ANALYSIS' (1st page of .TXT).
+ 
+ Note that Line Name is called 'Contractor ID' at the Run Time Summary &
+ is placed under 'Headstat ID'.
+ 
+ 'Headstat ID' is read from the Comment Field in the ECLHeader Logger
+ Program preamble & must have been put in by the QC rep when logging the
+ line.
+
+Printing Graphics
+ 
+ Graphical output is printed by F8 Graphics at the end of a run, PRIOR to
+ returning to the main menu (NOT F8 Set Graphics at the main menu).
+ 
+ A menu is presented. You can review the graphs on screen first, which is
+ recommended. 
+ 
+ Printer & Graphics settings can be changed at this time.
+ 
+ Enabled Graphs can be turned OFF at this time, but more Graphs should NOT
+ be enabled, because memory for graphs is allocated at run start.
+ 
+   !DO NOT ADD MORE GRAPHS JUST BEFORE PRINTING - IT WILL CRASH THE PC!
+ 
+ Printing can be interrupted with <ESC> which will abort after printing the
+ graphs on screen.
+
+Printing Reports
+ 
+ All text reporting is logged to disk in the reporting directory, default
+ \ECLSTAT\TEXT, as ASCII text files which can be viewed and printed with
+ your word processor. You can choose your own directory in F5 Options and
+ use that instead if you wish.
+ 
+ Longest line length in these files is 68 characters, so set margins to 
+ allow this line length to be printed.
+ 
+ Stats report (.TXT) formfeeds after the header page ("LINE ANALYSIS"), so
+ that the actual stats ("LINE SUMMARY") start on a new page. You can collate
+ the text & graphics as you wish, but ECL recommends:
+            LINE ANALYSIS        Header page from .TXT stats.
+            GRAPHICS             Graphics output (one or two pages).
+            LINE SUMMARY         Remainder of .TXT (2 to 4 pages).
+            FIRING SEQUENCE      MultiSource .SEQ (variable pages).
+            ERROR LOG            Errors flagged .LOG (variable pages).
+            SP/FN LISTING        Only if major numbering errors .SPN
+
+Browse Manuals
+ 
+ The Full Manual ECLSTAT.DOC in \ECLSTAT can be printed with your
+ favourite Wprd Processor.
+ 
+ The same applies to README.DOC
+
+DEFAULT
+ 
+ Not found.
+ 
+ This STATMAIN.HLP is for HeadStat Version V2.30 & you may have an
+ incompatible program version or a corrupted STATMAIN.HLP
+ 
+ 
+ Contact ECL with your HeadStat program version number.
+ 
+    Hugh Grierson, ECL, Henley: Tel: (491) 411100   Fax: (491) 410762.
+    Nick Morrison, WCS, Cyprus: Tel: (357) 6 652088 Fax: (357) 6 235307.
+        
